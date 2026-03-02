@@ -1,116 +1,53 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro">
-
   <xacro:macro name="sensors">
 
- <!-- ================= IMU ================= -->
-<!-- Fixed IMU with proper noise and frame configuration -->
-<gazebo reference="imu_link">
-  <sensor name="imu_sensor" type="imu">
-    <always_on>true</always_on>
-    <update_rate>100</update_rate>
-    <topic>/imu</topic>
-    
-    <!-- Orientation -->
-    <orientation>true</orientation>
-    
-    <imu>
-      <angular_velocity>
-        <x>true</x>
-        <y>true</y>
-        <z>true</z>
-      </angular_velocity>
-      <linear_acceleration>
-        <x>true</x>
-        <y>true</y>
-        <z>true</z>
-      </linear_acceleration>
-    </imu>
+    <!-- ================= IMU ================= -->
+    <gazebo reference="imu_link">
+      <sensor name="imu_sensor" type="imu">
+        <always_on>true</always_on>
+        <update_rate>100</update_rate>
+        <topic>/imu</topic>
+        <gz_frame_id>imu_link</gz_frame_id>
+      </sensor>
+    </gazebo>
 
-    <!-- Plugin for IMU simulation -->
-    <plugin
-      filename="gz-sim-imu-system"
-      name="gz::sim::systems::Imu">
-      <ros_namespace>/imu</ros_namespace>
-      <frame_id>imu_link</frame_id>
-    </plugin>
-  </sensor>
-</gazebo>
 
-<!-- ================= GPS ================= -->
-<gazebo reference="base_link">
-  <sensor name="gps_sensor" type="navsat">
-    <always_on>true</always_on>
-    <update_rate>10</update_rate>
-    <topic>/gps</topic>
-    
-    <!-- Position-only sensor (not velocity) -->
-    <position>true</position>
-    <velocity>false</velocity>
+    <!-- ================= GPS (FIXED PROPERLY) ================= -->
+    <gazebo reference="gps_link">
+      <sensor name="gps_sensor" type="navsat">
+        <always_on>true</always_on>
+        <update_rate>5</update_rate>
+        <topic>/gps</topic>
+        <gz_frame_id>gps_link</gz_frame_id>
+      </sensor>
+    </gazebo>
 
-    <!-- Add some noise for realism -->
-    <noise type="gaussian">
-      <rate>0.0 0.0 0.0</rate>
-      <position>0.0 0.0 0.0</position>
-    </noise>
 
-    <navsat>
-      <position_sensing>true</position_sensing>
-      <velocity_sensing>false</velocity_sensing>
-    </navsat>
+    <!-- ================= LIDAR (CPU SAFE VERSION) ================= -->
+    <gazebo reference="lidar_link">
+      <sensor name="lidar_sensor" type="lidar">
+        <always_on>true</always_on>
+        <update_rate>10</update_rate>
+        <topic>/scan</topic>
+        <gz_frame_id>lidar_link</gz_frame_id>
 
-    <plugin
-      filename="gz-sim-navsat-system"
-      name="gz::sim::systems::NavSat">
-      <ros_namespace>/gps</ros_namespace>
-      <frame_id>gps_link</frame_id>
-      <latitude_deg>0.0</latitude_deg>
-      <longitude_deg>0.0</longitude_deg>
-      <altitude>0.0</altitude>
-      <heading_offset>0.0</heading_offset>
-    </plugin>
-  </sensor>
-</gazebo>
+        <lidar>
+          <scan>
+            <horizontal>
+              <samples>720</samples>
+              <min_angle>-3.14159</min_angle>
+              <max_angle>3.14159</max_angle>
+            </horizontal>
+          </scan>
+          <range>
+            <min>0.1</min>
+            <max>10.0</max>
+          </range>
+        </lidar>
 
-<!-- ================= LIDAR ================= -->
-<gazebo reference="base_link">
-  <sensor name="lidar_sensor" type="gpu_lidar">
-    <always_on>true</always_on>
-    <update_rate>10</update_rate>
-    <topic>/scan</topic>
-    
-    <lidar>
-      <scan>
-        <horizontal>
-          <samples>720</samples>
-          <resolution>1</resolution>
-          <min_angle>-3.14159</min_angle>
-          <max_angle>3.14159</max_angle>
-        </horizontal>
-      </scan>
-      <range>
-        <min>0.1</min>
-        <max>10.0</max>
-        <resolution>0.01</resolution>
-      </range>
-      <noise>
-        <type>gaussian</type>
-        <mean>0.0</mean>
-        <stddev>0.01</stddev>
-      </noise>
-    </lidar>
+      </sensor>
+    </gazebo>
 
-    <plugin
-      filename="gz-sim-lidar-system"
-      name="gz::sim::systems::Lidar">
-      <ros_namespace>/scan</ros_namespace>
-      <frame_id>lidar_link</frame_id>
-      <topic>/scan</topic>
-    </plugin>
-  </sensor>
-</gazebo>
-       
-    
   </xacro:macro>
-
 </robot>

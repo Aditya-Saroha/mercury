@@ -8,8 +8,8 @@ import xacro
 
 def generate_launch_description():
 
+    # ================= ROBOT DESCRIPTION =================
     pkg_desc = get_package_share_directory('description')
-
     xacro_file = os.path.join(pkg_desc, 'urdf', 'robot.urdf.xacro')
 
     robot_description = xacro.process_file(
@@ -17,11 +17,19 @@ def generate_launch_description():
         mappings={}
     ).toxml()
 
+    # ================= WORLD FILE =================
+    world_file = os.path.join(
+    os.getcwd(),
+    'src',
+    'simulation',
+    'worlds',
+    'mercury.sdf'
+)
     return LaunchDescription([
 
-        # Start Gazebo
+        # Start Gazebo with YOUR world
         ExecuteProcess(
-            cmd=['gz', 'sim', '-r', 'empty.sdf'],
+            cmd=['gz', 'sim', '-r', world_file],
             output='screen'
         ),
 
@@ -49,4 +57,5 @@ def generate_launch_description():
             ],
             output='screen'
         ),
+
     ])
