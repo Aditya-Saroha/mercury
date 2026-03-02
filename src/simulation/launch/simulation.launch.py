@@ -19,12 +19,13 @@ def generate_launch_description():
 
     # ================= WORLD FILE =================
     world_file = os.path.join(
-    os.getcwd(),
-    'src',
-    'simulation',
-    'worlds',
-    'mercury.sdf'
-)
+        os.getcwd(),
+        'src',
+        'simulation',
+        'worlds',
+        'mercury.sdf'
+    )
+
     return LaunchDescription([
 
         # Start Gazebo with YOUR world
@@ -42,7 +43,8 @@ def generate_launch_description():
                 '/odom@nav_msgs/msg/Odometry@gz.msgs.Odometry',
                 '/imu@sensor_msgs/msg/Imu@gz.msgs.IMU',
                 '/gps@sensor_msgs/msg/NavSatFix@gz.msgs.NavSat',
-                '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan'
+                '/scan@sensor_msgs/msg/LaserScan@gz.msgs.LaserScan',
+                '/camera/image_raw@sensor_msgs/msg/Image@gz.msgs.Image'
             ],
             output='screen'
         ),
