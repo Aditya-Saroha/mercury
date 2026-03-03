@@ -1,0 +1,10 @@
+services:
+  ros:
+    build: .
+    container_name: ros2_dev
+    network_mode: host
+    volumes:
+      - ./:/root/mercury
+    working_dir: /root/mercury
+    stdin_open: true
+    tty: true
